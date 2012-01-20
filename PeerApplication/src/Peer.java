@@ -12,10 +12,15 @@ public class Peer {
 	private String name;
 	ServerSocket serverSocket;
 	BlockingQueue<Object> queue;
-	public Peer(String processName)
+	public Peer(String processName,int pnumber)
 	{//   count ++;
 	 //   id = count;
-	    serverSocket = null;
+		 try {
+	            serverSocket = new ServerSocket(pnumber);
+	        } catch (IOException e) {
+	            System.err.println(this.toString()+": "+"Could not listen on port: 4444.");
+	            System.exit(-1);
+	        }
 	    queue = new LinkedBlockingQueue<Object>(); 
 	    name = processName;
 	}
@@ -50,12 +55,6 @@ public class Peer {
 		public void setupConnectionAsProcess(int pnumber)
 		{
 			  System.out.println(this.toString()+": "+"In setupConnectionASProcess");
-			   try {
-		            serverSocket = new ServerSocket(pnumber);
-		        } catch (IOException e) {
-		            System.err.println(this.toString()+": "+"Could not listen on port: 4444.");
-		            System.exit(-1);
-		        }
 			 
 		        try {
 					new MultiServerThread(serverSocket.accept(),queue).start();

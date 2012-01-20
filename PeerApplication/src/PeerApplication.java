@@ -10,7 +10,7 @@ public class PeerApplication {
 	
 	public PeerApplication(int portnumber)
 	{
-		this.nace = new Peer("Alice");
+		this.nace = new Peer("Alice",portnumber);
 		this.hostPort = portnumber;
 		Thread t = new SocketListenThread(nace,hostPort);
 		t.start();
