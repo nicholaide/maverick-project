@@ -6,50 +6,54 @@ import java.io.*;
 
 public class Peer {
 
-	static private int count = 0;
-	private int id = 0;
+//	static private int count = 0;
+//	private int id = 0;
 	private int portno;
+	private String name;
 	ServerSocket serverSocket;
 	BlockingQueue<Object> queue;
-	public Peer()
-	{   count ++;
-	    id = count;
+	public Peer(String processName)
+	{//   count ++;
+	 //   id = count;
 	    serverSocket = null;
 	    queue = new LinkedBlockingQueue<Object>(); 
-	
+	    name = processName;
 	}
 		public void setupConnectionToProcess(String ip,int pnumber, String message) throws IOException{
 		   Socket kkSocket = null; 
 		   PrintWriter out = null;
            BufferedReader in = null;	
            
-           System.out.println("In setupConnectionToProcess");
+           System.out.println(this.toString()+": "+"In setupConnectionToProcess");
 			 try {
-			        kkSocket = new Socket("127.0.0.1", pnumber);
+			        kkSocket = new Socket(ip, pnumber);
 			        out = new PrintWriter(kkSocket.getOutputStream(), true);
 			        in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
 			    } catch (UnknownHostException e) {
-			        System.err.println("Don't know about host: taranis.");
+			        System.err.println(this.toString()+": "+"Don't know about host: taranis.");
 			        System.exit(1);
 			    } catch (IOException e) {
-			        System.err.println("Couldn't get I/O for the connection to:"+ip);
+			        System.err.println(this.toString()+": "+"Couldn't get I/O for the connection to:"+ip);
 			        System.exit(1);
 			        
 			    }
-			    
+			    System.out.println(this.toString()+": "+message);
 			    out.println(message);
-	
+			    System.out.println(this.toString()+": "+"Closing connections");
+	            out.close();
+	            in.close();
+	            kkSocket.close();
 		}
 		
 	
 		
 		public void setupConnectionAsProcess(int pnumber)
 		{
-			  System.out.println("In setupConnectionASProcess");
+			  System.out.println(this.toString()+": "+"In setupConnectionASProcess");
 			   try {
 		            serverSocket = new ServerSocket(pnumber);
 		        } catch (IOException e) {
-		            System.err.println("Could not listen on port: 4444.");
+		            System.err.println(this.toString()+": "+"Could not listen on port: 4444.");
 		            System.exit(-1);
 		        }
 			 
@@ -57,16 +61,25 @@ public class Peer {
 					new MultiServerThread(serverSocket.accept(),queue).start();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					System.out.println("Could not create thread");
+					System.out.println(this.toString()+": "+"Could not create thread");
 					e.printStackTrace();
 				}
 			 
 		}
 		
+		public void retrieveMessage()
+		{
+			try {
+				System.out.println(this.toString()+" received: "+queue.take());
+			} catch (InterruptedException e) {
+				System.out.println(this.toString()+": "+"Retrieval from queue failed");
+				e.printStackTrace();
+			}
+		}
 		@Override
 		public String toString()
 		{
-			return ("Matt"+id+" ");
+			return this.name;
 		}
 		
 	

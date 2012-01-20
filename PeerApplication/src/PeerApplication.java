@@ -10,7 +10,7 @@ public class PeerApplication {
 	
 	public PeerApplication(int portnumber)
 	{
-		this.nace = new Peer();
+		this.nace = new Peer("Alice");
 		this.hostPort = portnumber;
 		Thread t = new SocketListenThread(nace,hostPort);
 		t.start();
@@ -34,7 +34,7 @@ public class PeerApplication {
 	   String destIP = null;
 	   int destport = 0;
 	   String m = null;
-	   int sourceport = 4567;	
+	   int sourceport = 4800;	
 	   BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
        PeerApplication app = new PeerApplication(sourceport);	
 	   while(true)

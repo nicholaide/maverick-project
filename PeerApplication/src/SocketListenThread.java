@@ -13,7 +13,7 @@ public class SocketListenThread extends Thread {
 
 	  public void run()
 	  {
-		  while(true)
+		//  while(true)
 		  peer.setupConnectionAsProcess(port);
 	  }
 }

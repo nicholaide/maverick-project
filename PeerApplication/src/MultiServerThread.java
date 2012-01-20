@@ -19,14 +19,16 @@ public class MultiServerThread extends Thread {
 	    }
 
 	    public void run() {
-
+	    	PrintWriter serverOut = null;
+	    	BufferedReader serverIn = null ; 
 		try {
-     	    PrintWriter serverOut = new PrintWriter(socket.getOutputStream(), true);
-		    BufferedReader serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+     	    serverOut = new PrintWriter(socket.getOutputStream(), true);
+            serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             inputline = serverIn.readLine();
 		    
             System.out.println("Trying to put message in queue");
              try {
+            	 System.out.println("Putting in queue"+inputline); 
 				q.put(inputline);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -34,23 +36,21 @@ public class MultiServerThread extends Thread {
 				e.printStackTrace();
 			}
 		   
-		  //  outputLine = "Hi from Server";
-		  //  out.println(outputLine);
-
-	/*	    while ((inputLine = in.readLine()) != null) {
-			outputLine = inputLine;
-			out.println(outputLine);
-			if (outputLine.equals("Bye."))
-			    break;
-		    }
-		    out.close();
-		    in.close();
-		    socket.close(); */
 
 		} catch (IOException e) {
 		    e.printStackTrace();
 		}
+	    
+	    serverOut.close();
+	    try{
+	    serverIn.close();
+	    } catch(IOException e) {
+	        System.out.println("Can't close serverIn");
+	    	e.printStackTrace();
 	    }
-	}
+	    }
+	    
+	    }
+	
 
 
