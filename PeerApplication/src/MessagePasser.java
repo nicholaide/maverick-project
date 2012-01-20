@@ -18,4 +18,10 @@ public class MessagePasser {
 		return m;
 	}
 
+	public static void main(String[] args){
+		
+		
+		
+	}
+	
 }
