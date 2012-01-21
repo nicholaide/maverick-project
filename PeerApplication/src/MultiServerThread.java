@@ -8,11 +8,11 @@ public class MultiServerThread extends Thread {
 	
 
 	    private Socket socket = null;
-	    private BlockingQueue<Object> q = null;
+	    private BlockingQueue<Message> q = null;
         private String inputline = null;
         private String outputline = null;
-        
-	    public MultiServerThread(Socket socket,BlockingQueue<Object> peerqueue) {
+        private Message rxMessage = null;
+	    public MultiServerThread(Socket socket,BlockingQueue<Message> peerqueue) {
 		super("MultiServerThread");
 		this.socket = socket;
         this.q = peerqueue;
@@ -24,8 +24,8 @@ public class MultiServerThread extends Thread {
 		try {
      	    serverOut = new PrintWriter(socket.getOutputStream(), true);
             serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            inputline = serverIn.readLine();
-		    
+            rxMessage = serverIn.readLine();
+		    serverIn.
             System.out.println("Trying to put message in queue");
              try {
             	 System.out.println("Putting in queue"+inputline); 

@@ -34,6 +34,10 @@ public class Message implements Serializable {
 		 return message;
 	 }
 	 
+	 public String getData()
+	 {
+		 return this.message;
+	 }
 	 
 	 public void set_id(int id){
 		this.messageId = id; 

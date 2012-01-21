@@ -11,7 +11,7 @@ public class Peer {
 	private int portno;
 	private String name;
 	ServerSocket serverSocket;
-	BlockingQueue<Object> queue;
+	BlockingQueue<Message> queue;
 	public Peer(String processName,int pnumber)
 	{//   count ++;
 	 //   id = count;
@@ -21,10 +21,10 @@ public class Peer {
 	            System.err.println(this.toString()+": "+"Could not listen on port: 4444.");
 	            System.exit(-1);
 	        }
-	    queue = new LinkedBlockingQueue<Object>(); 
+	    queue = new LinkedBlockingQueue<Message>(); 
 	    name = processName;
 	}
-		public void setupConnectionToProcess(String ip,int pnumber, String message) throws IOException{
+		public void setupConnectionToProcess(String ip,int pnumber, Message message) throws IOException{
 		   Socket kkSocket = null; 
 		   PrintWriter out = null;
            BufferedReader in = null;	
@@ -42,7 +42,7 @@ public class Peer {
 			        System.exit(1);
 			        
 			    }
-			    System.out.println(this.toString()+": "+message);
+			    System.out.println(this.toString()+": "+message.getData());
 			    out.println(message);
 			    System.out.println(this.toString()+": "+"Closing connections");
 	            out.close();
@@ -66,14 +66,16 @@ public class Peer {
 			 
 		}
 		
-		public void retrieveMessage()
+		public Message retrieveMessage()
 		{
 			try {
-				System.out.println(this.toString()+" received: "+queue.take());
+				System.out.println(this.toString()+" received: "+(String)queue.take());
 			} catch (InterruptedException e) {
 				System.out.println(this.toString()+": "+"Retrieval from queue failed");
 				e.printStackTrace();
 			}
+			
+			
 		}
 		@Override
 		public String toString()
