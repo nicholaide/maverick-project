@@ -2,7 +2,7 @@
 Configuration :
  - Name: alice
    IP: 128.237.124.128
-   Port: 3442
+   Port: 4800
  - Name: bob
    IP: 128.237.242.179
-   Port: 4567
+   Port: 4810

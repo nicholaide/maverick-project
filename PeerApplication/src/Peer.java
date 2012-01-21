@@ -42,8 +42,10 @@ public class Peer {
 			        System.exit(1);
 			        
 			    }
+			    System.out.println("Before sending data");
 			    System.out.println(this.toString()+": "+message.getData());
 			    out.writeObject(message);
+			    out.flush();
 			    System.out.println(this.toString()+": "+"Closing connections");
 	            out.close();
 	            in.close();

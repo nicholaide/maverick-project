@@ -62,7 +62,7 @@ public class MessagePasser {
 	}
 	
 	Message receive(){
-		Message m = null;
+		Message m = p.retrieveMessage();
 		return m;
 	}
 
@@ -123,7 +123,7 @@ public class MessagePasser {
 			}
 			else if (choice.equals("R"))
 			{
-				
+				System.out.println("Application Received "+(passer.receive()).getData());
 				
 			}
 	}
