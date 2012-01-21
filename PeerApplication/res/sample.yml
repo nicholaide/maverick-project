@@ -1,8 +1,8 @@
 #This is a sample yaml file
 Configuration :
  - Name: alice
-   IP: 192.168.0.1
+   IP: 128.237.124.128
    Port: 3442
  - Name: bob
-   IP: 155.44.33.22
+   IP: 128.237.242.179
    Port: 4567
