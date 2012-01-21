@@ -19,17 +19,25 @@ public class MultiServerThread extends Thread {
 	    }
 
 	    public void run() {
-	    	PrintWriter serverOut = null;
-	    	BufferedReader serverIn = null ; 
+	    	ObjectOutputStream serverOut = null;
+	    	ObjectInputStream serverIn = null ; 
 		try {
-     	    serverOut = new PrintWriter(socket.getOutputStream(), true);
-            serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            rxMessage = serverIn.readLine();
-		    serverIn.
+     	    serverOut = new ObjectOutputStream(socket.getOutputStream());
+            serverIn = new ObjectInputStream(socket.getInputStream());
+            
+            
+            try {
+				rxMessage = (Message)serverIn.readObject();
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				System.out.println("Object Class not found");
+				e1.printStackTrace();
+			}
+           
             System.out.println("Trying to put message in queue");
              try {
-            	 System.out.println("Putting in queue"+inputline); 
-				q.put(inputline);
+            	 System.out.println("Putting in queue "+rxMessage.getData()); 
+				q.put(rxMessage);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				System.out.println("Can't put in ");
@@ -41,7 +49,17 @@ public class MultiServerThread extends Thread {
 		    e.printStackTrace();
 		}
 	    
-	    serverOut.close();
+		
+		
+		try{
+		    serverOut.close();
+		    } catch(IOException e) {
+		        System.out.println("Can't close serverOut");
+		    	e.printStackTrace();
+		    }
+		
+		
+	
 	    try{
 	    serverIn.close();
 	    } catch(IOException e) {

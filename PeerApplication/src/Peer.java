@@ -26,14 +26,14 @@ public class Peer {
 	}
 		public void setupConnectionToProcess(String ip,int pnumber, Message message) throws IOException{
 		   Socket kkSocket = null; 
-		   PrintWriter out = null;
-           BufferedReader in = null;	
+		   ObjectOutputStream out = null;
+		   ObjectInputStream in = null;	
            
            System.out.println(this.toString()+": "+"In setupConnectionToProcess");
 			 try {
 			        kkSocket = new Socket(ip, pnumber);
-			        out = new PrintWriter(kkSocket.getOutputStream(), true);
-			        in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
+			        out = new ObjectOutputStream(kkSocket.getOutputStream());
+			        in = new ObjectInputStream(kkSocket.getInputStream());
 			    } catch (UnknownHostException e) {
 			        System.err.println(this.toString()+": "+"Don't know about host: taranis.");
 			        System.exit(1);
@@ -43,7 +43,7 @@ public class Peer {
 			        
 			    }
 			    System.out.println(this.toString()+": "+message.getData());
-			    out.println(message);
+			    out.writeObject(message);
 			    System.out.println(this.toString()+": "+"Closing connections");
 	            out.close();
 	            in.close();
@@ -68,13 +68,19 @@ public class Peer {
 		
 		public Message retrieveMessage()
 		{
+			Message m = null;
 			try {
-				System.out.println(this.toString()+" received: "+(String)queue.take());
+				 m = queue.take();
 			} catch (InterruptedException e) {
 				System.out.println(this.toString()+": "+"Retrieval from queue failed");
 				e.printStackTrace();
 			}
 			
+
+			System.out.println(this.toString()+" retreiving: "+m.getData());
+		
+			
+			return m;
 			
 		}
 		@Override

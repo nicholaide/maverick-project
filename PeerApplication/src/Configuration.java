@@ -30,7 +30,7 @@ public class Configuration {
     	for (int i = 0; i < list.size(); i++) {
 			Map<String, Object> o = (Map<String, Object>)list.get(i);
 			if (((String)o.get("Name")).equals(name))
-			     return Integer.parseInt((String)o.get("Port"));
+			     return (Integer)o.get("Port");
 			
 		}
 		
