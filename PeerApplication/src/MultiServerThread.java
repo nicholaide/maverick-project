@@ -20,6 +20,7 @@ public class MultiServerThread extends Thread {
 
 	    public void run() {
 	    	ObjectOutputStream serverOut = null;
+	    	serverOut.flush();
 	    	ObjectInputStream serverIn = null ; 
 		try {
      	    serverOut = new ObjectOutputStream(socket.getOutputStream());
