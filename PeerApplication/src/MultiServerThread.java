@@ -23,8 +23,8 @@ public class MultiServerThread extends Thread {
 	    	
 	    	ObjectInputStream serverIn = null ; 
 		try {
-     	  //  serverOut = new ObjectOutputStream(socket.getOutputStream());
-          //  serverOut.flush();
+     	      serverOut = new ObjectOutputStream(socket.getOutputStream());
+              serverOut.flush();
      	    System.out.println("Before server In");
 			serverIn = new ObjectInputStream(socket.getInputStream());
 			   System.out.println("After server In");   
@@ -54,12 +54,12 @@ public class MultiServerThread extends Thread {
 	    
 		
 		
-/*		try{
+		try{
 		    serverOut.close();
 		    } catch(IOException e) {
 		        System.out.println("Can't close serverOut");
 		    	e.printStackTrace();
-		    } */
+		    } 
 		
 		
 	

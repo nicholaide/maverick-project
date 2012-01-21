@@ -24,6 +24,8 @@ public class MessagePasser {
 		this.processPort = config.getPort(local_name);
 	
 		p = new Peer(processName,processPort);
+		 Thread t = new SocketListenThread(this.p,this.processPort);
+		 t.start();
 	
 	}
 	
