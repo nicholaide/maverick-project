@@ -10,40 +10,68 @@ public class SendRules {
 		list = configList;
 	}
 	
-	public String getIP(String name)
+	
+	public boolean checkSendRuleMatch(String src,String dest,String kind,int id){
+		
+		
+		
+	}
+	
+	
+	
+	public boolean checkSrc(String src)
 	{
 		for (int i = 0; i < list.size(); i++) {
 			Map<String, Object> o = (Map<String, Object>)list.get(i);
-			if (((String)o.get("Name")).equals(name))
-			     return (String)o.get("IP");
+			if (((String)o.get("Src")).equals(src))
+			     return true;
 			
 			
 		}
 		
-		return "Not Found";
+		return false;
 	}
 
-    public int getPort(String name)
-    {
-    	
-    	for (int i = 0; i < list.size(); i++) {
+   
+	
+	public boolean checkDest(String Dest)
+	{
+		for (int i = 0; i < list.size(); i++) {
 			Map<String, Object> o = (Map<String, Object>)list.get(i);
-			if (((String)o.get("Name")).equals(name))
-			     return Integer.parseInt((String)o.get("Port"));
+			if (((String)o.get("Dest")).equals(Dest))
+			     return true;
+			
 			
 		}
 		
-		return -1;
-    	
-    	
-    	
-    }
+		return false;
+	}
+	
+	public boolean checkKind(String Kind)
+	{
+		for (int i = 0; i < list.size(); i++) {
+			Map<String, Object> o = (Map<String, Object>)list.get(i);
+			if (((String)o.get("Kind")).equals(Kind))
+			     return true;
+			
+			
+		}
+		
+		return false;
+	}
 	
 	
-	
-	
-	
-	
+	public boolean checkID(int id))
+	{
+		for (int i = 0; i < list.size(); i++) {
+			Map<String, Object> o = (Map<String, Object>)list.get(i);
+			if (((Integer)o.get("ID"))==id)
+			     return true;		
+			
+		}
+		
+		return false;
+	}
 	
 	
 	
