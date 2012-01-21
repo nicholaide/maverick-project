@@ -36,8 +36,9 @@ public class Peer {
 			        kkSocket = new Socket(ip, pnumber);
 			        System.out.println(this.toString()+": "+"Before out");
 			        out = new ObjectOutputStream(kkSocket.getOutputStream());
+			        out.flush();
 			        System.out.println(this.toString()+": "+"Before in");
-			        in = new ObjectInputStream(kkSocket.getInputStream());
+			    //    in = new ObjectInputStream(kkSocket.getInputStream());
 			    } catch (UnknownHostException e) {
 			        System.out.println(this.toString()+": "+"Don't know about host: taranis.");
 			        System.exit(1);
