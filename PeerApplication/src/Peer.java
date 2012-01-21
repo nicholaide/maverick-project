@@ -53,7 +53,7 @@ public class Peer {
 			    out.flush();
 			    System.out.println(this.toString()+": "+"Closing connections");
 	            out.close();
-	            in.close();
+	          //  in.close();
 	            kkSocket.close();
 		}
 		
