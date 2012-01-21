@@ -25,8 +25,9 @@ public class MultiServerThread extends Thread {
 		try {
      	  //  serverOut = new ObjectOutputStream(socket.getOutputStream());
           //  serverOut.flush();
-     	    serverIn = new ObjectInputStream(socket.getInputStream());
-            
+     	    System.out.println("Before server In");
+			serverIn = new ObjectInputStream(socket.getInputStream());
+			   System.out.println("After server In");   
             
             try {
 				rxMessage = (Message)serverIn.readObject();
