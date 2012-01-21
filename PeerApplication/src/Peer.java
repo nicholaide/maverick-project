@@ -31,14 +31,18 @@ public class Peer {
            
            System.out.println(this.toString()+": "+"In setupConnectionToProcess");
 			 try {
+				 System.out.println(this.toString()+": "+ip+" "+pnumber);
+				    System.out.println(this.toString()+": "+"Before Socket");
 			        kkSocket = new Socket(ip, pnumber);
+			        System.out.println(this.toString()+": "+"Before out");
 			        out = new ObjectOutputStream(kkSocket.getOutputStream());
+			        System.out.println(this.toString()+": "+"Before in");
 			        in = new ObjectInputStream(kkSocket.getInputStream());
 			    } catch (UnknownHostException e) {
-			        System.err.println(this.toString()+": "+"Don't know about host: taranis.");
+			        System.out.println(this.toString()+": "+"Don't know about host: taranis.");
 			        System.exit(1);
 			    } catch (IOException e) {
-			        System.err.println(this.toString()+": "+"Couldn't get I/O for the connection to:"+ip);
+			        System.out.println(this.toString()+": "+"Couldn't get I/O for the connection to:"+ip);
 			        System.exit(1);
 			        
 			    }
