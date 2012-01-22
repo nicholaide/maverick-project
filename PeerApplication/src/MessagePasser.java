@@ -110,8 +110,11 @@ public class MessagePasser {
 		
 		
 		p.setupConnectionToProcess(config.getIP(message.getDest()),config.getPort(message.getDest()),message);
-		delayedMessage = delayQ.poll();
-		p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),message);	
+	    
+		while(delayQ.size()>0){
+			delayedMessage = delayQ.poll();
+			p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),message);
+		}
 	}
 	
 	Message receive(){
