@@ -15,6 +15,19 @@ public class ReceiveRules {
 		list = configList;
 	}
 	
+	//NEW
+	public ReceiveRules(){
+		ruleCount = new int[50];
+		for(int i=0;i<50;i++)
+			ruleCount[i] = 0;
+	}
+	
+	//NEW
+	public void setRules(List<Object> configList) {
+			list = configList;
+		}
+	
+	
 	/*ID parameter must come from MessagePasser;
 	should this return on action rather than a boolean?
 	*/

@@ -18,8 +18,12 @@ public class MessagePasser {
      private static int msgcount ;
      private BlockingQueue<Message> delayQ;
      private BlockingQueue<Message> delayreceiveQ;
-	public MessagePasser(String configuration_filename, String local_name){
-	//Creat YAML object and add to three Configuration , SendRules , ReceiveRules
+     
+     private long fileModifiedTime = 0;
+     private File configFile;
+     
+	public MessagePasser(String configuration_filename, String local_name) {
+	//Create YAML object and add to three Configuration , SendRules , ReceiveRules
     //Check if YAML file changed...probably need a thread
 		msgcount = 0;
 		filename = configuration_filename;
@@ -28,13 +32,34 @@ public class MessagePasser {
 	    delayreceiveQ = new LinkedBlockingQueue<Message>(); 
 		try {
 			config = new Configuration(this.parseYamlConfig(configuration_filename));
+			
+			//NEW
+			configFile = new File(filename);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+		
 			System.out.println("Could not find file");
 			e.printStackTrace();
 		}
+		
+		//NEW
+		try {
+			fileModifiedTime = configFile.lastModified();
+		}
+		catch (Exception e)
+		{
+			System.out.println("Could not determine file's last modification time");
+			e.printStackTrace();
+		}
+		
 		this.processName = local_name;
 		this.processPort = config.getPort(local_name);
+		
+		
+		/**********NEW
+		 */
+		sendRules = new SendRules();
+		receiveRules = new ReceiveRules();
+		/*********/
 	
 		p = new Peer(processName,processPort);
 		 Thread t = new SocketListenThread(this.p,this.processPort);
@@ -76,7 +101,21 @@ public class MessagePasser {
 		String action = null;
 		Message delayedMessage = null;
 		System.out.println("checking against Send Rules"); 
-		sendRules = new SendRules(this.parseYamlSendRules(filename));
+		
+		//sendRules = new SendRules(this.parseYamlSendRules(filename));
+		
+		//NEW
+		if (fileChanged())
+		{   System.out.println("In file changed");
+			sendRules = new SendRules(this.parseYamlSendRules(filename));
+		}
+		
+		else
+		{   System.out.println("In else");
+			sendRules.setRules(this.parseYamlSendRules(filename));
+		}
+		
+		
 		message.set_id(msgcount);
 		action = sendRules.checkSendRuleMatch(message.getSrc(),message.getDest(),message.getKind(),message.getID());
 		
@@ -126,18 +165,59 @@ public class MessagePasser {
 	
 	}
 	
+	
+	//NEW
+	private boolean fileChanged() {
+		long newModifiedTime = 0;
+		
+		try {
+			newModifiedTime = configFile.lastModified();
+		}
+		catch (Exception e){
+			System.out.println("Could not determine file's last modification time");
+			e.printStackTrace();
+		}
+		
+                 if(this.fileModifiedTime != newModifiedTime)
+                    this.fileModifiedTime = newModifiedTime;
+		
+		return !(this.fileModifiedTime==newModifiedTime);
+	}
+
 	Message receive(){
 		Message message = p.retrieveMessage();
 		String action = null;
 		Message delayedMessage = null;
 		System.out.println("checking against Receive Rules"); 
 		
-		try{
+		
+		//NEW
+		if (fileChanged()) {
+			
+			try{
+			receiveRules = new ReceiveRules(this.parseYamlReceiveRules(filename));
+			} catch(FileNotFoundException e){
+				System.out.println("File not found");
+				e.printStackTrace();
+			}
+		}
+		else {
+			try{
+				receiveRules.setRules(this.parseYamlReceiveRules(filename));
+			} catch(FileNotFoundException e){
+				System.out.println("File not found");
+				e.printStackTrace();
+			}
+		
+		}
+		
+		/*try{
 		receiveRules = new ReceiveRules(this.parseYamlReceiveRules(filename));
 		} catch(FileNotFoundException e){
 			System.out.println("File not found");
 			e.printStackTrace();
 		}
+		*/
 		action = receiveRules.checkReceiveRuleMatch(message.getSrc(),message.getDest(),message.getKind(),message.getID());
 		
 		if(action.equals("drop"))

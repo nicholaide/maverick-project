@@ -15,6 +15,23 @@ public class SendRules {
 		list = configList;
 	}
 	
+	
+	//NEW
+	public SendRules()
+	{
+		ruleCount = new int[50];
+		for(int i=0;i<50;i++)
+			ruleCount[i] = 0;
+		
+	}
+	
+	
+	//NEW
+	public void setRules(List<Object> configList)
+	{
+		list = configList;
+	}
+	
 	/*ID parameter must come from MessagePasser;
 	should this return on action rather than a boolean?
 	*/
@@ -33,10 +50,12 @@ public class SendRules {
 			b_kind = this.checkKind(i, kind);
 			b_id = this.checkID(i,id);
 	//		boolean b_N = this.checkN(i, N);
-			
+			System.out.println("Outside n"+b_src+b_dest+b_kind+b_id);
 			if (b_src && b_dest && b_kind && b_id)
 			{
+			  	
 			  ruleCount[i] ++;	
+			  System.out.println("Incremented "+i+" rule to "+ruleCount[i]);
 			  break;
 			  
 			}
@@ -46,7 +65,7 @@ public class SendRules {
 
 		
 		for (int i = 0; i < list.size(); i++) {
-			
+			System.out.println("In 2nd loop");
 			b_src = this.checkSrc(i, src);
 			b_dest = this.checkDest(i, dest);
 			b_kind = this.checkKind(i, kind);
@@ -54,7 +73,7 @@ public class SendRules {
 	        b_N = this.checkN(i, this.getN(i));
 		
 	        if (b_src && b_dest && b_kind && b_id && b_N)
-			{
+			{ 		System.out.println("In 2nd loop match");
 			  return this.getAction(i);
 			  
 			}
