@@ -14,6 +14,30 @@ SendRules :
    Kind: Ack
    ID: 1
    
+ - Action: drop
+   Src: alice
+   Dest: bob
+   Kind: Ack
+   ID: 2
+   
+ - Action: delay
+   Src: alice
+   Dest: bob
+   Kind: Ack
+   ID: 3
+   
+ - Action: duplicate
+   Src: alice
+   Dest: bob
+   Kind: Ack
+   Nth: 5
+   
+ - Action: duplicate
+   Src: bob
+   Dest: alice
+   Kind: Ack
+   ID: 1
+   
 ReceiveRules :
  - Action: duplicate
    Src: bob
