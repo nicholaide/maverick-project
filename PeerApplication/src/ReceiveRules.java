@@ -74,13 +74,18 @@ public class ReceiveRules {
 	private boolean checkSrc(int listItem, String src)
 	{
 		Map<String, Object> o = (Map<String, Object>)list.get(listItem);
-			if (((String)o.get("Src")).equals(src))
+			
+		/* Nulls are wild cards, and are returned 
+		 * as true (i.e. they match anything) */
+		if (o.get("Src")==(null))
+			 return true;
+		
+		
+		
+		else if (((String)o.get("Src")).equals(src))
 			     return true;
 			
-			/* Nulls are wild cards, and are returned 
-			 * as true (i.e. they match anything) */
-			else if (o.get("Src").equals(null))
-				 return true;		
+				
 			else
 				return false;
 		
@@ -91,13 +96,16 @@ public class ReceiveRules {
 	private boolean checkDest(int listItem, String dest)
 	{
 		Map<String, Object> o = (Map<String, Object>)list.get(listItem);
-		if (((String)o.get("Dest")).equals(dest))
-		     return true;
 		
 		/* Nulls are wild cards, and are returned 
 		 * as true (i.e. they match anything) */
-		else if (o.get("Dest").equals(null))
-			 return true;		
+		if (o.get("Dest")==(null))
+			 return true;	
+		
+		
+		else if (((String)o.get("Dest")).equals(dest))
+		     return true;
+			
 		else
 			return false;
 	}
@@ -105,13 +113,17 @@ public class ReceiveRules {
 	private boolean checkKind(int listItem, String kind)
 	{
 		Map<String, Object> o = (Map<String, Object>)list.get(listItem);
-		if (((String)o.get("Kind")).equals(kind))
-		     return true;
 		
 		/* Nulls are wild cards, and are returned 
 		 * as true (i.e. they match anything) */
-		else if (o.get("Kind").equals(null))
+		if (o.get("Kind")==(null))
 			 return true;		
+		
+		
+		else if (((String)o.get("Kind")).equals(kind))
+		     return true;
+		
+		
 		else
 			return false;
 	}
@@ -120,24 +132,25 @@ public class ReceiveRules {
 	private boolean checkID(int listItem, int id)
 	{
 		Map<String, Object> o = (Map<String, Object>)list.get(listItem);
-		if (((Integer)o.get("ID"))==id)
-		     return true;
 		
 		/* Nulls are wild cards, and are returned 
 		 * as true (i.e. they match anything) */
-		else if (o.get("ID").equals(null))
-			 return true;		
+		if (o.get("ID")==null)
+			 return true;
+		
+		else if (((Integer)o.get("ID"))==id)
+		     return true;		
 		else
 			return false;
 	}
 	
 	private boolean checkN(int listItem, int N)
 	{
-		Map<String, Object> o = (Map<String, Object>)list.get(listItem);
+       Map<String, Object> o = (Map<String, Object>)list.get(listItem);
 		
 		/* Nulls are wild cards, and are returned 
 		 * as true (i.e. they match anything) */
-		if (o.get("Nth").equals(null))
+		if (o.get("Nth")==null)
 			return true;		
 		
 		else if (((Integer)o.get("Nth"))==N)
@@ -149,10 +162,10 @@ public class ReceiveRules {
 	}
 	
 	private int getN(int listItem){
-		
-		return ruleCount[listItem];
-		
-		}
+	
+	return ruleCount[listItem];
+	
+	}
 	
 	}
 	
