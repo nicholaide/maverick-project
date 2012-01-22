@@ -146,8 +146,8 @@ public class SendRules {
 	}
 	
 	private int getN(int listItem){
-	Map<String, Object> o = (Map<String, Object>)list.get(listItem);
-	return (Integer)o.get("Nth");
+	
+	return ruleCount[listItem];
 	
 	}
 	}
