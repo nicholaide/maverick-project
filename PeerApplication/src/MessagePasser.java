@@ -93,6 +93,7 @@ public class MessagePasser {
 			p.setupConnectionToProcess(config.getIP(message.getDest()),config.getPort(message.getDest()),message);
 			
 			while(delayQ.size()>0){
+				System.out.println("Flushing queue");
 				delayedMessage = delayQ.poll();
 				p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),message);
 			}
@@ -108,13 +109,21 @@ public class MessagePasser {
 			
 		}
 		
-		
+	
+		else if ((action.equals("NOP")))
+		{   
+			System.out.println("In NOP");
 		p.setupConnectionToProcess(config.getIP(message.getDest()),config.getPort(message.getDest()),message);
 	    
 		while(delayQ.size()>0){
+			System.out.println("Flushing queue");
 			delayedMessage = delayQ.poll();
 			p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),message);
 		}
+	
+		}
+	
+	
 	}
 	
 	Message receive(){
@@ -134,7 +143,7 @@ public class MessagePasser {
 		if(action.equals("drop"))
 		{
 			System.out.println("Dropping received message");
-			return null;
+			return message;
 		}
 		
 		else if ((action.equals("duplicate")))
@@ -145,6 +154,7 @@ public class MessagePasser {
 			System.out.println(message.getData());
 			//Put another sys out
 			while(delayreceiveQ.size()>0){
+				System.out.println("Flushing queue");
 				delayedMessage = delayreceiveQ.poll();
 				System.out.println(message.getData());	
 			}
@@ -157,12 +167,18 @@ public class MessagePasser {
 			
 			System.out.println("Receive Delaying packets");
 			delayQ.add(message);
+			return message;
 			
 		}
 		
-		
+		else{
+		System.out.println("NOP");
+		System.out.println(message.getData());
 		return message;
 	
+		}
+		
+		
 	}
 
 	public static void main(String[] args){
@@ -231,8 +247,12 @@ public class MessagePasser {
 			else if (choice.equals("R"))
 			{
 				//Check for null Handling heres
-				System.out.println("Application Received "+(passer.receive()).getData());
-				
+				Message m = null;
+				m = passer.receive();
+				if(m!=null)
+				System.out.println("Application Received "+m.getData());
+				else
+				System.out.println("Application Received Null :"+"packet got delayed");	
 			}
 	
 		}
