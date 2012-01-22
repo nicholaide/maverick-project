@@ -134,7 +134,7 @@ public class SendRules {
 	private boolean checkN(int listItem, int N)
 	{
 		Map<String, Object> o = (Map<String, Object>)list.get(listItem);
-		if (((String)o.get("Nth")).equals(N))
+		if (((Integer)o.get("Nth"))==N)
 		     return true;
 		
 		/* Nulls are wild cards, and are returned 
