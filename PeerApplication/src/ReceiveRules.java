@@ -134,13 +134,16 @@ public class ReceiveRules {
 	private boolean checkN(int listItem, int N)
 	{
 		Map<String, Object> o = (Map<String, Object>)list.get(listItem);
-		if (((Integer)o.get("Nth"))==N)
-		     return true;
 		
 		/* Nulls are wild cards, and are returned 
 		 * as true (i.e. they match anything) */
-		else if (o.get("Nth").equals(null))
-			 return true;		
+		if (o.get("Nth").equals(null))
+			return true;		
+		
+		else if (((Integer)o.get("Nth"))==N)
+		     return true;
+		
+	
 		else
 			return false;
 	}
