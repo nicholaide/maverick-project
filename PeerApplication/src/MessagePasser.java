@@ -95,7 +95,7 @@ public class MessagePasser {
 			while(delayQ.size()>0){
 				System.out.println("Flushing queue");
 				delayedMessage = delayQ.poll();
-				p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),message);
+			p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),delayedMessage);
 			}
 				
 			
@@ -118,7 +118,7 @@ public class MessagePasser {
 		while(delayQ.size()>0){
 			System.out.println("Flushing queue");
 			delayedMessage = delayQ.poll();
-			p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),message);
+			p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),delayedMessage);
 		}
 	
 		}
@@ -156,7 +156,7 @@ public class MessagePasser {
 			while(delayreceiveQ.size()>0){
 				System.out.println("Flushing queue");
 				delayedMessage = delayreceiveQ.poll();
-				System.out.println(message.getData());	
+				System.out.println(delayedMessage.getData());	
 			}
 		      		
 			return message;
@@ -174,6 +174,12 @@ public class MessagePasser {
 		else{
 		System.out.println("NOP");
 		System.out.println(message.getData());
+		while(delayreceiveQ.size()>0){
+			System.out.println("Flushing queue");
+			delayedMessage = delayreceiveQ.poll();
+			System.out.println(delayedMessage.getData());	
+		}
+	      	
 		return message;
 	
 		}
