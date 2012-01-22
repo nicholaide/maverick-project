@@ -122,6 +122,7 @@ public class MessagePasser {
 		String action = null;
 		Message delayedMessage = null;
 		System.out.println("checking against Receive Rules"); 
+		
 		try{
 		receiveRules = new ReceiveRules(this.parseYamlReceiveRules(filename));
 		} catch(FileNotFoundException e){
@@ -141,7 +142,8 @@ public class MessagePasser {
 			
 			System.out.println("Receive Duplicating packets");
 			System.out.println(message.getData());
-			
+			System.out.println(message.getData());
+			//Put another sys out
 			while(delayreceiveQ.size()>0){
 				delayedMessage = delayreceiveQ.poll();
 				System.out.println(message.getData());	
@@ -186,6 +188,8 @@ public class MessagePasser {
 			}
 		
 		MessagePasser passer = new MessagePasser(fileName,processName);
+		while (true)
+		{		
 		System.out.println("Press S to send message and R to receive message") ;
 		try{
 			choice = stdin.readLine();
@@ -230,6 +234,9 @@ public class MessagePasser {
 				System.out.println("Application Received "+(passer.receive()).getData());
 				
 			}
-	}
+	
+		}
+		
+		}
 	
 }
