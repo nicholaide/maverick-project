@@ -120,7 +120,7 @@ public class ReceiveRules {
 	private boolean checkID(int listItem, int id)
 	{
 		Map<String, Object> o = (Map<String, Object>)list.get(listItem);
-		if (((String)o.get("ID")).equals(id))
+		if (((Integer)o.get("ID"))==id)
 		     return true;
 		
 		/* Nulls are wild cards, and are returned 
