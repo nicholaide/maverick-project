@@ -14,13 +14,13 @@ SendRules :
    Kind: Ack
    ID: 1
    
- - Action: drop
+ - Action: duplicate
    Src: alice
    Dest: bob
    Kind: Ack
    ID: 2
    
- - Action: delay
+ - Action: drop
    Src: alice
    Dest: bob
    Kind: Ack
