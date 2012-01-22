@@ -4,32 +4,62 @@ import java.util.Map;
 
 public class ReceiveRules {
 
+
 	private List<Object> list;
+	static int ruleCount[];
 	public ReceiveRules(List<Object> configList){
+		ruleCount = new int[50];
+		for(int i=0;i<50;i++)
+			ruleCount[i] = 0;
+		
 		list = configList;
 	}
 	
 	/*ID parameter must come from MessagePasser;
 	should this return on action rather than a boolean?
 	*/
-	public String checkSendRuleMatch(String src,String dest,String kind, int N, int id){
+	public String checkReceiveRuleMatch(String src,String dest,String kind,int id){
 		
+		boolean b_src = false;
+		boolean b_dest = false;
+		boolean b_kind = false;
+		boolean b_id = false;
+		boolean b_N = false;
 		//iterate over the configuration list
 		for (int i = 0; i < list.size(); i++) {
 		
-			boolean b_src = this.checkSrc(i, src);
-			boolean b_dest = this.checkDest(i, dest);
-			boolean b_kind = this.checkKind(i, kind);
-			boolean b_id = this.checkID(i,id);
-			boolean b_N = this.checkN(i, N);
+			b_src = this.checkSrc(i, src);
+			b_dest = this.checkDest(i, dest);
+			b_kind = this.checkKind(i, kind);
+			b_id = this.checkID(i,id);
+	//		boolean b_N = this.checkN(i, N);
 			
-			if (b_src && b_dest && b_kind && b_id && b_N)
+			if (b_src && b_dest && b_kind && b_id)
+			{
+			  ruleCount[i] ++;	
+			  break;
+			  
+			}
+					
+			
+		}
+
+		
+		for (int i = 0; i < list.size(); i++) {
+			
+			b_src = this.checkSrc(i, src);
+			b_dest = this.checkDest(i, dest);
+			b_kind = this.checkKind(i, kind);
+			b_id = this.checkID(i,id);
+	        b_N = this.checkN(i, this.getN(i));
+		
+	        if (b_src && b_dest && b_kind && b_id && b_N)
 			{
 			  return this.getAction(i);
 			  
 			}
+		
 		}
-
 		//no rule was found
 		return "NOP";
 	
@@ -115,4 +145,15 @@ public class ReceiveRules {
 			return false;
 	}
 	
-}
+	private int getN(int listItem){
+	Map<String, Object> o = (Map<String, Object>)list.get(listItem);
+	return (Integer)o.get("Nth");
+	
+	}
+	}
+	
+
+	
+	
+	
+

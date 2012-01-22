@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.net.*;
 
 import org.yaml.snakeyaml.Yaml;
@@ -9,10 +11,21 @@ public class MessagePasser {
      private Configuration config;
      private String processName;
      private int processPort;
+     private SendRules sendRules;
+     private ReceiveRules receiveRules; 
+     private String filename;
+     private String localname;
+     private static int msgcount ;
+     private BlockingQueue<Message> delayQ;
+     private BlockingQueue<Message> delayreceiveQ;
 	public MessagePasser(String configuration_filename, String local_name){
 	//Creat YAML object and add to three Configuration , SendRules , ReceiveRules
     //Check if YAML file changed...probably need a thread
-		
+		msgcount = 0;
+		filename = configuration_filename;
+		localname = local_name;
+	    delayQ = new LinkedBlockingQueue<Message>();
+	    delayreceiveQ = new LinkedBlockingQueue<Message>(); 
 		try {
 			config = new Configuration(this.parseYamlConfig(configuration_filename));
 		} catch (FileNotFoundException e) {
@@ -53,25 +66,105 @@ public class MessagePasser {
 		 return l;
 	}
 	
-	public Message createMessage(String destProcess,Object data)
+	public Message createMessage(String destProcess,String kind,Object data)
 	{
-		return (new Message(config.getIP(destProcess),config.getPort(destProcess),data));
+		return (new Message(localname,destProcess,kind,data));
 	}
 	
 	public void send(Message message) throws IOException{
-		p.setupConnectionToProcess(message.getDstIP(),message.getDstPort(), message);
+	    msgcount ++;
+		String action = null;
+		Message delayedMessage = null;
+		System.out.println("checking against Send Rules"); 
+		sendRules = new SendRules(this.parseYamlSendRules(filename));
+		message.set_id(msgcount);
+		action = sendRules.checkSendRuleMatch(message.getSrc(),message.getDest(),message.getKind(),message.getID());
 		
+		if(action.equals("drop"))
+		{
+			System.out.println("Dropping message");
+		}
+		
+		else if ((action.equals("duplicate")))
+		{   
+			
+			System.out.println("Duplicating packets");
+			p.setupConnectionToProcess(config.getIP(message.getDest()),config.getPort(message.getDest()),message);
+			p.setupConnectionToProcess(config.getIP(message.getDest()),config.getPort(message.getDest()),message);
+			
+			while(delayQ.size()>0){
+				delayedMessage = delayQ.poll();
+				p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),message);
+			}
+				
+			
+		}
+		
+		else if ((action.equals("delay")))
+		{   
+			
+			System.out.println("Delaying packets");
+			delayQ.add(message);
+			
+		}
+		
+		
+		p.setupConnectionToProcess(config.getIP(message.getDest()),config.getPort(message.getDest()),message);
+		delayedMessage = delayQ.poll();
+		p.setupConnectionToProcess(config.getIP(delayedMessage.getDest()),config.getPort(delayedMessage.getDest()),message);	
 	}
 	
 	Message receive(){
-		Message m = p.retrieveMessage();
-		return m;
+		Message message = p.retrieveMessage();
+		String action = null;
+		Message delayedMessage = null;
+		System.out.println("checking against Receive Rules"); 
+		try{
+		receiveRules = new ReceiveRules(this.parseYamlReceiveRules(filename));
+		} catch(FileNotFoundException e){
+			System.out.println("File not found");
+			e.printStackTrace();
+		}
+		action = receiveRules.checkReceiveRuleMatch(message.getSrc(),message.getDest(),message.getKind(),message.getID());
+		
+		if(action.equals("drop"))
+		{
+			System.out.println("Dropping received message");
+			return null;
+		}
+		
+		else if ((action.equals("duplicate")))
+		{   
+			
+			System.out.println("Receive Duplicating packets");
+			System.out.println(message.getData());
+			
+			while(delayreceiveQ.size()>0){
+				delayedMessage = delayreceiveQ.poll();
+				System.out.println(message.getData());	
+			}
+		      		
+			return message;
+		}
+		
+		else if ((action.equals("delay")))
+		{   
+			
+			System.out.println("Receive Delaying packets");
+			delayQ.add(message);
+			
+		}
+		
+		
+		return message;
+	
 	}
 
 	public static void main(String[] args){
 		String fileName = null;
 		String processName = null;
 		String choice = null;
+		String kind = null;
 		BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("Starting Application....");
 		System.out.println("Please enter file name and local process name");
@@ -101,7 +194,7 @@ public class MessagePasser {
 			if(choice.equals("S"))
 			{   String destinationProcess = null;
 			    String msg = null;
-			    System.out.println("Enter local name of destination and message") ;
+			    System.out.println("Enter local name of destination and message and kind of message(Ack/Nack)") ;
 			    try{
 					destinationProcess = stdin.readLine();
 					} catch(IOException e){
@@ -111,12 +204,17 @@ public class MessagePasser {
 					try{
 						msg = stdin.readLine();
 						} catch(IOException e){
-						System.out.println("Could not enter filename");
+						System.out.println("Could not enter message");
 						e.printStackTrace();
 						}
-			
+						try{
+							kind = stdin.readLine();
+							} catch(IOException e){
+							System.out.println("Could not enter kind");
+							e.printStackTrace();
+							}
 			            try{
-						passer.send(passer.createMessage(destinationProcess,msg));
+						passer.send(passer.createMessage(destinationProcess,kind,msg));
 			            } catch(IOException e) {
 			            	System.out.println("IO Exception while sending message");
 			            	e.printStackTrace();
@@ -125,6 +223,7 @@ public class MessagePasser {
 			}
 			else if (choice.equals("R"))
 			{
+				//Check for null Handling heres
 				System.out.println("Application Received "+(passer.receive()).getData());
 				
 			}
